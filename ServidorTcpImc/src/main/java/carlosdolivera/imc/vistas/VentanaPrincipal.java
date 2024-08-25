@@ -36,6 +36,16 @@ public class VentanaPrincipal extends JFrame {
         });
 
         formopened();
+        btnLimpiar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                limpiar();
+            }
+        });
+    }
+
+    private void limpiar() {
+        this.cajaLog.setText("");
     }
 
     private void formopened() {

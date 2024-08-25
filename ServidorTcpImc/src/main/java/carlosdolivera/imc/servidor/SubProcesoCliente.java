@@ -19,6 +19,7 @@ public class SubProcesoCliente extends Thread{
     public SubProcesoCliente(VentanaPrincipal ventana, Socket cliente) {
         this.ventana = ventana;
         this.cliente = cliente;
+        ip = cliente.getInetAddress().getHostAddress();
     }
 
     public void run(){
@@ -70,6 +71,7 @@ public class SubProcesoCliente extends Thread{
             String msg = "Error al caputurar datos del cliente " + ip;
             System.out.println(log()+msg);
             ventana.getCajaLog().append(log()+msg + "\n");
+            ex.printStackTrace();
             throw new Exception("Error al caputurar datos del cliente " + ip);
         }
     }
@@ -80,9 +82,14 @@ public class SubProcesoCliente extends Thread{
             public void run() {
                 DataOutputStream output = null;
                 try {
+                    if(imc.mensaje!=null){
                     output = new DataOutputStream(cliente.getOutputStream());
                     output.writeFloat(imc.resultado);
-                    output.writeUTF(imc.mensaje);
+                    if(imc.mensaje!=null){
+                        output.writeUTF(imc.mensaje);
+                    }else{
+                        output.writeUTF("");
+                    }
                     String msg = "IMC: " + imc.resultado;
                     System.out.println(log()+msg);
                     ventana.getCajaLog().append(log()+msg + "\n");
@@ -90,6 +97,7 @@ public class SubProcesoCliente extends Thread{
                     System.out.println(log()+msg);
                     ventana.getCajaLog().append(log()+msg + "\n");
                     output.flush();
+                    }
                     enviarRespuesta(calcularImc());
                 } catch (IOException ex) {
                     String msg = "Error al enviar datos al cliente " + ip;
@@ -99,6 +107,7 @@ public class SubProcesoCliente extends Thread{
                 } catch (Exception ex) {
                     String msg = "Error al leer datos del cliente " + ip;
                     System.out.println(log()+msg);
+                    ex.printStackTrace();
                     ventana.getCajaLog().append(log()+msg + "\n");
                     try {
                         cliente.close();
